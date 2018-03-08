@@ -6,6 +6,7 @@ class App extends Component {
   constructor(props) {
       super(props)
       this.state = {
+          isOpenModal: false,
           todos: [
               {
                   title: 'Running',
@@ -28,6 +29,20 @@ class App extends Component {
   }
 
 
+  modalClasses = () => {
+      let classes = "modal"
+      if (this.state.isOpenModal) {
+          classes = " modal-open"
+      }
+      return classes
+  }
+
+  openModal = () =>
+      this.setState({isOpenModal: true})
+
+  closeModal = () =>
+      this.setState({isOpenModal: false})
+
 
   render() {
 
@@ -38,16 +53,31 @@ class App extends Component {
           <hr/>
 
           <div className="container">
-              <p><input type="button" name="list" value=" List " />
-
+              <div>
+                  <input type="button" name="list" value=" List " />
                   <input type="button" name="calendar" value=" The calendar " />
-              </p>
+              </div>
 
-              <p><input type="button" name="today" value=" Today " />
+              <div>
+                  <input onClick={this.openModal} type="button" name="Create Todo" value=" Create Todo " />
+              </div>
+
+              <div>
+                  <input type="button" name="today" value=" Today " />
                   <input type="button" name="tomorrow" value=" Tomorrow " />
                   <input type="button" name="week" value=" Week " />
                   <input type="button" name="month" value=" Month " />
-              </p>
+              </div>
+          </div>
+
+          <div className={this.modalClasses()}>
+              <div className="modal-content">
+                  <p>
+                      Create todo
+                  </p>
+                  <input type="text" name="today" value="" />
+                  <input onClick={this.closeModal} type="button" name="click" value=" Close " />
+              </div>
           </div>
 
 
@@ -69,11 +99,17 @@ class App extends Component {
                       <td>{todo.endDate}</td>
                       <td>{todo.priority}</td>
                       <td>{todo.participants}</td>
-                      <td></td>
+                      <td>
+                          <span>&#x1f441;</span>
+                          <span>&#x270d;</span>
+
+                      </td>
                   </tr>
               )}
           </table>
+          <div className="Modal-dialog"></div>
       </div>
+
     );
   }
 }
