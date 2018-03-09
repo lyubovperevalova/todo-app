@@ -75,7 +75,18 @@ class App extends Component {
                   <p>
                       Create todo
                   </p>
-                  <input type="text" name="today" value="" />
+                  Title: <br/>
+                  <input type="text" name="title" value="" /> <br/>
+                  Description: <br/>
+                  <input type="text" name="description" value="" /> <br/>
+                  Start date: <br/>
+                  <input type="text" name="startDate" value="" /> <br/>
+                  End date: <br/>
+                  <input type="text" name="endDate" value="" /> <br/>
+                  Priority: <br/>
+                  <input type="text" name="priority" value="" /> <br/>
+                  Participants: <br/>
+                  <input type="text" name="participants" value="" /> <br/>
                   <input onClick={this.closeModal} type="button" name="click" value=" Close " />
               </div>
           </div>
