@@ -7,8 +7,10 @@ class App extends Component {
     super(props)
     this.state = {
       isOpenModal: false,
+      modal: null,
       todos: [
         {
+          id: 1,
           title: 'Running',
           description: 'rrrr',
           startDate: 'yy',
@@ -17,6 +19,7 @@ class App extends Component {
           participants: 'Lyuba Perevalova'
         },
         {
+          id: 2,
           title: 'Running',
           description: 'rrrr',
           startDate: 'yy',
@@ -37,21 +40,36 @@ class App extends Component {
       return classes
   }
 
-  openModal = () =>
-      this.setState({isOpenModal: true})
+  openNewFormModal = () =>
+    this.setState({
+      isOpenModal: true,
+      modal: this.newForm
+    })
+
+  openEditFormModal = () =>
+    this.setState({
+      isOpenModal: true,
+      modal: this.editForm
+    })
 
   closeModal = () =>
       this.setState({isOpenModal: false})
 
   addTodo = () => {
+    const { title, description, startDate, endDate, priority, participants, todos } = this.state
+
+    const next_id = Math.max(...todos.map((t) => t.id)) + 1
+
     const todo = {
-      title: this.input_title.value,
-      description: this.input_description.value,
-      startDate: this.input_startDate.value,
-      endDate: this.input_endDate.value,
-      priority: this.input_priority.value,
-      participants: this.input_participants.value
+      id: next_id,
+      title: title,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      priority: priority,
+      participants: participants
     }
+
     this.setState({
       isOpenModal: false,
       todos: [...this.state.todos, todo ]
@@ -59,90 +77,156 @@ class App extends Component {
     this.clearForm()
   }
 
-  clearForm = () => {
-    this.input_title.value = ""
-    this.input_description.value = ""
-    this.input_startDate.value = ""
-    this.input_endDate.value = ""
-    this.input_priority.value = ""
-    this.input_participants.value = ""
+  editTodo = (todo) => {
+    this.setState({
+      ...this.state, ...todo
+    })
 
+    this.openEditFormModal()
+  }
+
+  clearForm = () => {
+
+    this.setState({
+      id: "",
+      title: "",
+      description: "",
+      startDate: "",
+      endDate: "",
+      priority: "",
+      participants: ""
+    })
+  }
+
+  newForm = () =>
+    <div>
+      <p>
+        Create todo
+      </p>
+      {this.todo_form()}
+      <input onClick={this.addTodo} type="button" name="click" value="Create" />
+    </div>
+
+  editForm = () => {
+    return (
+      <div>
+        <p>
+          Edit todo
+        </p>
+        {this.todo_form()}
+        <input onClick={this.updateTodo} type="button" name="click" value="Update" />
+      </div>)
+  }
+
+  todo_form = () => {
+    const { title, description, startDate, endDate, priority, participants } = this.state
+
+    return (<div>
+      Title: <br/>
+      <input type="text" value={title} name="title" onChange={this.handleInputChange} /> <br/>
+      Description: <br/>
+      <input type="text" value={description} name="description" onChange={this.handleInputChange} /> <br/>
+      Start date: <br/>
+      <input type="text" value={startDate} name="startDate" onChange={this.handleInputChange} /> <br/>
+      End date: <br/>
+      <input type="text" value={endDate} name="endDate" onChange={this.handleInputChange} /> <br/>
+      Priority: <br/>
+      <input type="text" value={priority} name="priority" onChange={this.handleInputChange} /> <br/>
+      Participants: <br/>
+      <input type="text" value={participants} name="participants" onChange={this.handleInputChange} /> <br/>
+      <input onClick={this.closeModal} type="button" name="click" value="Close" />
+    </div>)}
+
+  updateTodo = () => {
+    const { id, title, description, startDate, endDate, priority, participants } = this.state
+
+    const todo = {
+      id: id,
+      title: title,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      priority: priority,
+      participants: participants
+    }
+
+    const todosWithoutCurrent = this.state.todos.filter((t) => t.id !== id)
+
+    this.setState({
+      isOpenModal: false,
+      todos: [...todosWithoutCurrent, todo ]
+    })
+    this.clearForm()
+  }
+
+  handleInputChange = (event) => {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
   }
 
   render() {
 
     return (
       <div>
-          <h1 align="center" >Todo list</h1>
+        <h1 align="center" >Todo list</h1>
 
-          <hr/>
+        <hr/>
 
-          <div className="container">
-            <div>
-              <input type="button" name="list" value=" List " />
-              <input type="button" name="calendar" value=" The calendar " />
-            </div>
-
-            <div>
-              <input onClick={this.openModal} type="button" name="Create Todo" value=" Create Todo " />
-            </div>
-
-            <div>
-              <input type="button" name="today" value=" Today " />
-              <input type="button" name="tomorrow" value=" Tomorrow " />
-              <input type="button" name="week" value=" Week " />
-              <input type="button" name="month" value=" Month " />
-            </div>
+        <div className="container">
+          <div>
+            <input type="button" name="list" value=" List " />
+            <input type="button" name="calendar" value=" The calendar " />
           </div>
 
+          <div>
+            <input onClick={this.openNewFormModal} type="button" name="Create Todo" value=" Create Todo " />
+          </div>
+
+          <div>
+            <input type="button" name="today" value=" Today " />
+            <input type="button" name="tomorrow" value=" Tomorrow " />
+            <input type="button" name="week" value=" Week " />
+            <input type="button" name="month" value=" Month " />
+          </div>
+        </div>
+
+        { this.state.modal &&
           <div className={this.modalClasses()}>
             <div className="modal-content">
-              <p>
-                  Create todo
-              </p>
-              Title: <br/>
-              <input type="text" name="title" ref={(input) => this.input_title = input}/> <br/>
-              Description: <br/>
-              <input type="text" name="description"  ref={(input) => this.input_description = input}/> <br/>
-              Start date: <br/>
-              <input type="text" name="startDate" ref={(input) => this.input_startDate = input}/> <br/>
-              End date: <br/>
-              <input type="text" name="endDate" ref={(input) => this.input_endDate = input}/> <br/>
-              Priority: <br/>
-              <input type="text" name="priority" ref={(input) => this.input_priority = input}/> <br/>
-              Participants: <br/>
-              <input type="text" name="participants" ref={(input) => this.input_participants = input}/> <br/>
-              <input onClick={this.closeModal} type="button" name="click" value="Close" />
-              <input onClick={this.addTodo} type="button" name="click" value="Create" />
+              { this.state.modal() }
             </div>
           </div>
-
+        }
 
           <table border="2">
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Start date</th>
+              <th>End date</th>
+              <th>Priority</th>
+              <th>Participants</th>
+              <th></th>
+            </tr>
+            { this.state.todos.map((todo) =>
               <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Start date</th>
-                  <th>End date</th>
-                  <th>Priority</th>
-                  <th>Participants</th>
-                  <th></th>
+                <td>{todo.title}</td>
+                <td>{todo.description}</td>
+                <td>{todo.startDate}</td>
+                <td>{todo.endDate}</td>
+                <td>{todo.priority}</td>
+                <td>{todo.participants}</td>
+                <td>
+                  <span>&#x1f441;</span>
+                  <span onClick={() => this.editTodo(todo)}>&#x270d;</span>
+                </td>
               </tr>
-              { this.state.todos.map((todo) =>
-                  <tr>
-                      <td>{todo.title}</td>
-                      <td>{todo.description}</td>
-                      <td>{todo.startDate}</td>
-                      <td>{todo.endDate}</td>
-                      <td>{todo.priority}</td>
-                      <td>{todo.participants}</td>
-                      <td>
-                          <span>&#x1f441;</span>
-                          <span>&#x270d;</span>
-
-                      </td>
-                  </tr>
-              )}
+            )}
           </table>
           <div className="Modal-dialog"></div>
       </div>
