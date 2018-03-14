@@ -52,6 +52,12 @@ class App extends Component {
       modal: this.editForm
     })
 
+  openShowTodoModal = (todo) =>
+    this.setState({
+      isOpenModal: true,
+      modal: () => this.todoShow(todo)
+    })
+
   closeModal = () =>
       this.setState({isOpenModal: false})
 
@@ -83,6 +89,10 @@ class App extends Component {
     })
 
     this.openEditFormModal()
+  }
+
+  showTodo = (todo) => {
+    this.openShowTodoModal(todo)
   }
 
   clearForm = () => {
@@ -118,24 +128,43 @@ class App extends Component {
       </div>)
   }
 
+  todoShow = (todo) => {
+    return (
+      <div>
+        <p>
+          Show todo
+        </p>
+        <p>Title: {todo.title}</p>
+        <p>Description: {todo.description}</p>
+        <p>Start date: {todo.startDate}</p>
+        <p>End date: {todo.endDate}</p>
+        <p>Priority: {todo.priority}</p>
+        <p>Participants: {todo.participants}</p>
+        <input onClick={this.closeModal} type="button" name="click" value="Close" />
+      </div>
+    )
+  }
+
   todo_form = () => {
     const { title, description, startDate, endDate, priority, participants } = this.state
 
-    return (<div>
-      Title: <br/>
-      <input type="text" value={title} name="title" onChange={this.handleInputChange} /> <br/>
-      Description: <br/>
-      <input type="text" value={description} name="description" onChange={this.handleInputChange} /> <br/>
-      Start date: <br/>
-      <input type="date" value={startDate} name="startDate" onChange={this.handleInputChange} /> <br/>
-      End date: <br/>
-      <input type="date" value={endDate} name="endDate" onChange={this.handleInputChange} /> <br/>
-      Priority: <br/>
-      <input type="text" value={priority} name="priority" onChange={this.handleInputChange} /> <br/>
-      Participants: <br/>
-      <input type="text" value={participants} name="participants" onChange={this.handleInputChange} /> <br/>
-      <input onClick={this.closeModal} type="button" name="click" value="Close" />
-    </div>)}
+    return (
+      <div>
+        Title: <br/>
+        <input type="text" value={title} name="title" onChange={this.handleInputChange} /> <br/>
+        Description: <br/>
+        <input type="text" value={description} name="description" onChange={this.handleInputChange} /> <br/>
+        Start date: <br/>
+        <input type="date" value={startDate} name="startDate" onChange={this.handleInputChange} /> <br/>
+        End date: <br/>
+        <input type="date" value={endDate} name="endDate" onChange={this.handleInputChange} /> <br/>
+        Priority: <br/>
+        <input type="text" value={priority} name="priority" onChange={this.handleInputChange} /> <br/>
+        Participants: <br/>
+        <input type="text" value={participants} name="participants" onChange={this.handleInputChange} /> <br/>
+        <input onClick={this.closeModal} type="button" name="click" value="Close" />
+      </div>
+    )}
 
   updateTodo = () => {
     const { id, title, description, startDate, endDate, priority, participants } = this.state
@@ -170,6 +199,8 @@ class App extends Component {
   }
 
   render() {
+    const sortedTodos =  this.state.todos.sort((a, b) =>
+      new Date(a.startDate) - new Date(b.startDate))
 
     return (
       <div>
@@ -213,7 +244,7 @@ class App extends Component {
               <th>Participants</th>
               <th></th>
             </tr>
-            { this.state.todos.map((todo) =>
+            { sortedTodos.map((todo) =>
               <tr>
                 <td>{todo.title}</td>
                 <td>{todo.description}</td>
@@ -222,7 +253,7 @@ class App extends Component {
                 <td>{todo.priority}</td>
                 <td>{todo.participants}</td>
                 <td>
-                  <span>&#x1f441;</span>
+                  <span onClick={() => this.showTodo(todo)}>&#x1f441;</span>
                   <span onClick={() => this.editTodo(todo)}>&#x270d;</span>
                 </td>
               </tr>
