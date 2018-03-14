@@ -127,9 +127,9 @@ class App extends Component {
       Description: <br/>
       <input type="text" value={description} name="description" onChange={this.handleInputChange} /> <br/>
       Start date: <br/>
-      <input type="text" value={startDate} name="startDate" onChange={this.handleInputChange} /> <br/>
+      <input type="date" value={startDate} name="startDate" onChange={this.handleInputChange} /> <br/>
       End date: <br/>
-      <input type="text" value={endDate} name="endDate" onChange={this.handleInputChange} /> <br/>
+      <input type="date" value={endDate} name="endDate" onChange={this.handleInputChange} /> <br/>
       Priority: <br/>
       <input type="text" value={priority} name="priority" onChange={this.handleInputChange} /> <br/>
       Participants: <br/>
