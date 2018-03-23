@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import moment from 'moment';
 
 class App extends Component {
 
@@ -11,12 +12,12 @@ class App extends Component {
       todos: [
         {
           id: 1,
-          title: 'Running',
-          description: 'rrrr',
-          startDate: 'yy',
-          endDate: 'yy',
-          priority: 'high',
-          participants: 'Lyuba Perevalova'
+          title: 'Sleeping',
+          description: 'restful sleep at home',
+          startDate: 'today',
+          endDate: 'tomorrow',
+          priority: '!!!',
+          participants: 'Lyuba'
         },
         {
           id: 2,
@@ -29,6 +30,13 @@ class App extends Component {
         }
       ]
     }
+  }
+
+  filterTodosByDate = () => {
+    this.state.todos.filter((todo) => {
+      moment(todo.startDate) < moment().add(7, 'days').calendar();
+      console.log(this.state.todos.filter)
+    })
   }
 
 
@@ -221,7 +229,7 @@ class App extends Component {
           <div>
             <input type="button" name="today" value=" Today " />
             <input type="button" name="tomorrow" value=" Tomorrow " />
-            <input type="button" name="week" value=" Week " />
+            <input onClick={this.filterTodosByDate} type="button" name="week" value=" Week " />
             <input type="button" name="month" value=" Month " />
           </div>
         </div>
